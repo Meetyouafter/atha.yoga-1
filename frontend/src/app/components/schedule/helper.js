@@ -1,8 +1,8 @@
 const getDataForSchedule = lesson => {
-  const msStart = Date.parse(lesson.start_at);
-  const msFinish = Date.parse(lesson.end_at);
+  const secondsFromStart = Date.parse(lesson.start_at);
+  const secondsFromFinish = Date.parse(lesson.end_at);
 
-  const newStart = new Date(msStart);
+  const newStart = new Date(secondsFromStart);
 
   const removeTimezone = ms => {
     const dateWithTimezone = new Date(ms);
@@ -11,10 +11,10 @@ const getDataForSchedule = lesson => {
     return new Date(dateWithouthTimezone);
   };
 
-  const newStartWithouthTimezone = removeTimezone(msStart);
-  const newFinishWithouthTimezone = removeTimezone(msFinish);
+  const newStartWithouthTimezone = removeTimezone(secondsFromStart);
+  const newFinishWithouthTimezone = removeTimezone(secondsFromFinish);
 
-  const itWas = !(newStart > new Date());
+  const isPastLesson = !(newStart > new Date());
 
   const [
     month,
@@ -69,7 +69,7 @@ const getDataForSchedule = lesson => {
     weekday: dayOfWeek[weekday],
     date: `${normalizeDate(day, 'day')}.${normalizeDate(month, 'month')}`,
     timeInterval: getTimeInterval(),
-    disabled: itWas,
+    disabled: isPastLesson,
   };
 };
 

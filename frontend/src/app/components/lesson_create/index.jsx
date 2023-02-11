@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';
 import { Navigate, useLocation } from 'react-router-dom';
@@ -31,6 +32,7 @@ import PaymentMethod from '../lesson_payment/index';
 import RepeatLessons from '../lesson_repeat/index';
 import LessonsService from '../../services/lessons';
 import AlertDialog from '../lesson_alert';
+import { setAlertProps } from '../../core/slices/alert-notification';
 
 const LessonCreate = () => {
   const [lessonLevels, setLessonLevels] = useState([]);
@@ -61,6 +63,7 @@ const LessonCreate = () => {
   const [validationErrors, setValidationErrors] = useState({});
 
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
 
@@ -203,6 +206,12 @@ const LessonCreate = () => {
   const postLessonData = () => {
     LessonsService.postLesson(lessonData)
       .then(setIsFormSend(true));
+    dispatch(setAlertProps({
+      display: true,
+      status: 'success',
+      title: 'Занятие создано',
+      text: 'Информация отправлена на проверку, занятие в ближайшее время появится в поиске',
+    }));
   };
 
   const changeDonation = e => {

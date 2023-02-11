@@ -1,29 +1,14 @@
 import React, { useState } from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   Box, Divider, Grid, Typography,
-
-  Button,
-  Card, Menu, MenuItem, Modal,
 } from '@mui/material';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import { Link, useNavigate } from 'react-router-dom';
-import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
-import CloseIcon from '@mui/icons-material/Close';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import EmojiFlagsOutlinedIcon from '@mui/icons-material/EmojiFlagsOutlined';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import LessonMenu from './menu';
-import ticket from '../../../assets/public/ticket.svg';
+import LessonMenu from './lessonMenu';
 import LinkModal from './linkModal';
 import DateModal from './dateModal';
-import useMediaQuery from '@mui/material/useMediaQuery';
-
 
 const ScheduleLessonCard = ({
   name, weekday, date, timeInterval, disabled,
@@ -33,27 +18,19 @@ const ScheduleLessonCard = ({
   const [openDateModal, setOpenDateModal] = useState(false);
 
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
+  const openMenu = Boolean(anchorEl);
 
   const handleClickOpenLinkModal = () => setOpenLinkModal(true);
   const handleClickOpenDateModal = () => setOpenDateModal(true);
   const handleClickCloseLinkModal = () => setOpenLinkModal(false);
   const handleClickCloseDateModal = () => setOpenDateModal(false);
 
-  const handleClose = () => {
-    setOpenLinkModal(false);
-  };
-
-  const handleCloseModal = () => setOpenLinkModal(false);
-  const openMenu = Boolean(anchorEl);
-  const handleMenuClick = event => {
+  const handleMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
-  };
-  const handleOpenModal = () => {
-    handleMenuClose();
-    setOpenLinkModal(true);
   };
 
   return (
@@ -99,7 +76,7 @@ const ScheduleLessonCard = ({
             aria-controls={openMenu ? 'basic-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={openMenu ? 'true' : undefined}
-            onClick={handleMenuClick}
+            onClick={handleMenuOpen}
           />
           <LessonMenu
             anchorEl={anchorEl}
@@ -111,6 +88,7 @@ const ScheduleLessonCard = ({
           <LinkModal
             isOpenModal={openLinkModal}
             handleClose={handleClickCloseLinkModal}
+            handleMenuClose={handleMenuClose}
             name={name}
             date={date}
             timeInterval={timeInterval}
@@ -118,6 +96,7 @@ const ScheduleLessonCard = ({
           <DateModal
             isOpenModal={openDateModal}
             handleClose={handleClickCloseDateModal}
+            handleMenuClose={handleMenuClose}
             name={name}
             date={date}
             timeInterval={timeInterval}

@@ -1,8 +1,9 @@
 /* eslint-disable no-useless-escape */
 import React, { useState } from 'react';
 import {
-  Button, Dialog, Grid, Typography, TextField, DialogActions, DialogContent,
+  Button, Dialog, Grid, Typography, TextField, DialogActions, DialogContent, Stack, Snackbar,
 } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,32 +14,68 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import getLessons from '../../services/shedule';
+import './styles.scss';
+
+const Alert = React.forwardRef((props, ref) => <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />);
 
 const DateModal = ({
-  isOpenModal, handleClose, name, date, timeInterval,
+  isOpenModal, handleClose, name, date, timeInterval, handleMenuClose,
 }) => {
   const [newLessonDate, setNewLessonDate] = useState(null);
   const [newLessonTime, setNewLessonTime] = useState(null);
-
+  const [isSendForm, setIsSendForm] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
-
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
+  const [openAlert, setOpenAlert] = React.useState(false);
 
   const getValidationFormErrorMessages = () => {
     let dateError;
+    let timeError;
+    if (newLessonDate !== null && String(newLessonDate.$d) === 'Invalid Date') {
+      dateError = 'Неверный формат даты';
+    }
+    if (newLessonTime !== null && String(newLessonTime.$d) === 'Invalid Date') {
+      timeError = 'Неверный формат времени';
+    }
     if (newLessonDate < Date.now()) {
       dateError = 'Дата должна быть не ранее сегодняшней';
+    }
+    if (newLessonDate === null) {
+      dateError = 'Обязательное поле';
+    }
+    if (newLessonTime === null) {
+      timeError = 'Обязательное поле';
     }
 
     setValidationErrors({
       ...validationErrors,
       dateError,
+      timeError,
     });
+  };
+
+  const handleOpenAlert = () => {
+    getValidationFormErrorMessages();
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
+
+  const postNewDate = () => {
+    getLessons()
+      .then(handleClose())
+      .then(handleMenuClose())
+      .then(setIsSendForm(true));
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
-
       <div>
         <Dialog
           open={isOpenModal}
@@ -48,6 +85,7 @@ const DateModal = ({
         >
           <form onSubmit={e => {
             e.preventDefault();
+            postNewDate();
           }}
           >
             <DialogContent sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
@@ -73,7 +111,7 @@ const DateModal = ({
                       }}
                     />
 
-                    <Typography sx={{ fontSize: '14px', width: pointForAdaptiveToSM ? '85%' : '100%'}}>
+                    <Typography sx={{ fontSize: '14px', width: pointForAdaptiveToSM ? '85%' : '100%' }}>
                       Перенос и отмена занятия менее чем за 24 часа уменьшает рейтинг.
                       Пожалуйста, делайте перенос и отмену только в случае необходимости.
                     </Typography>
@@ -107,7 +145,7 @@ const DateModal = ({
                     label="Время"
                     value={newLessonTime}
                     onChange={newValue => setNewLessonTime(newValue)}
-                    renderInput={params => <TextField sx={{ marginBottom: pointForAdaptiveToSM ? '5%' : '', width: pointForAdaptiveToSM ? '100%' : '48%' }} {...params} required />}
+                    renderInput={params => <TextField sx={{ marginBottom: pointForAdaptiveToSM ? '5%' : '', width: pointForAdaptiveToSM ? '100%' : '48%' }} {...params} required error={!!validationErrors.timeError} helperText={validationErrors.timeError} />}
                   />
                 </Grid>
               </Grid>
@@ -116,9 +154,24 @@ const DateModal = ({
               sx={{ justifyContent: pointForAdaptiveToSM ? 'space-around' : 'right' }}
             >
               <Button onClick={handleClose} sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>Отмена</Button>
-              <Button onClick={getValidationFormErrorMessages} type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>
-                Перенести
-              </Button>
+              <Stack
+                spacing={2}
+                sx={{ width: 'auto' }}
+              >
+                <Button onClick={handleOpenAlert} type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>
+                  Перенести
+                </Button>
+                {isSendForm ? (
+                  <Snackbar bodystyle={{ backgroundColor: '#2E7D32' }} open={openAlert} autoHideDuration={500000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                    <Alert onClose={handleCloseAlert} sx={{ width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.9)', color: '#212121' }}>
+                      <Typography sx={{ fontSize: '16px', color: '#212121', fontWeight: '500' }}>
+                        Занятие перенесено
+                      </Typography>
+                    </Alert>
+                  </Snackbar>
+                ) : ''}
+              </Stack>
+
             </DialogActions>
           </form>
         </Dialog>

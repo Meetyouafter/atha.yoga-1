@@ -62,7 +62,7 @@ const LinkModal = ({
                 {name}
               </Typography>
 
-              <Grid container item sx={{ paddingBottom: '16px' }}>
+              <Grid container item sx={{ paddingBottom: '16px', paddingTop: '5px' }}>
                 <Typography mr="16px" sx={{ color: 'text.secondary' }}>
                   <DateRangeOutlinedIcon fontSize="20" sx={{ mr: '6px', verticalAlign: '-2px', color: '#0D6EFD' }} />
                   {date}
@@ -73,7 +73,7 @@ const LinkModal = ({
                 </Typography>
               </Grid>
 
-              <Grid container item sx={{ justifyContent: 'space-between', columnGap: '4%' }}>
+              <Grid container item sx={{ justifyContent: 'space-between', flexDirection: pointForAdaptiveToSM ? 'column' : 'row', columnGap: '4%' }}>
                 <TextField
                   id="lesson_link"
                   label="Ссылка на занятие"
@@ -81,7 +81,7 @@ const LinkModal = ({
                   value={link}
                   onChange={e => setLink(e.target.value)}
                   required
-                  sx={{ width: '48%' }}
+                  sx={{ width: pointForAdaptiveToSM ? '100%' : '48%', margin: pointForAdaptiveToSM ? '10px 0 10px 0' : '0' }}
                   error={!!validationErrors?.linkError}
                   helperText={validationErrors?.linkError}
                 />
@@ -92,16 +92,18 @@ const LinkModal = ({
                   value={linkId}
                   onChange={e => setLinkId(e.target.value)}
                   placeholder="Идентификатор конференции"
-                  sx={{ width: '48%' }}
+                  sx={{ width: pointForAdaptiveToSM ? '100%' : '48%' }}
                   error={!!validationErrors?.linkId}
                   helperText={validationErrors?.linkId}
                 />
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Отмена</Button>
-            <Button onClick={getValidationFormErrorMessages} autoFocus type="submit">
+          <DialogActions
+            sx={{ justifyContent: pointForAdaptiveToSM ? 'space-around' : 'right' }}
+          >
+            <Button onClick={handleClose} sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px'}}>Отмена</Button>
+            <Button onClick={getValidationFormErrorMessages} autoFocus type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px'}}>
               Изменить
             </Button>
           </DialogActions>

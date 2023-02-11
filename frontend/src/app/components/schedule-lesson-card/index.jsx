@@ -22,6 +22,7 @@ import LessonMenu from './menu';
 import ticket from '../../../assets/public/ticket.svg';
 import LinkModal from './linkModal';
 import DateModal from './dateModal';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const ScheduleLessonCard = ({
   name, weekday, date, timeInterval, disabled,
@@ -29,6 +30,8 @@ const ScheduleLessonCard = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLinkModal, setOpenLinkModal] = useState(false);
   const [openDateModal, setOpenDateModal] = useState(false);
+
+  const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
 
   const handleClickOpenLinkModal = () => setOpenLinkModal(true);
   const handleClickOpenDateModal = () => setOpenDateModal(true);
@@ -68,7 +71,7 @@ const ScheduleLessonCard = ({
         <Divider orientation="vertical" variant="middle" sx={{ width: '2%', borderRight: disabled ? '1px solid #BDBDBD' : '1px solid #0D6EFD' }} flexItem />
 
         <Grid item xs container sx={{ width: '78%' }}>
-          <Grid item xs container direction="column" sx={{ p: '16px' }}>
+          <Grid item xs container direction="column" sx={{ p: pointForAdaptiveToSM ? '0 0 0 16px' : '16px' }}>
             <Grid item>
               <Typography sx={{ fontSize: '18px', mb: '8px', color: disabled ? '#ADB5BD' : '#212121' }}>
                 {name}
@@ -87,7 +90,7 @@ const ScheduleLessonCard = ({
           </Grid>
         </Grid>
 
-        <Grid item container alignItems="center" justifyContent="center" sx={{ width: '10%' }}>
+        <Grid item container alignItems="center" justifyContent="center" sx={{ width: '10%', marginBottom: pointForAdaptiveToSM ? '17%' : '' }}>
           <MoreHorizOutlinedIcon
             color="disabled"
             sx={{ cursor: 'pointer' }}

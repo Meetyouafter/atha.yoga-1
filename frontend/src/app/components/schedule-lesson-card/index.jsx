@@ -24,6 +24,7 @@ import LinkModal from './linkModal';
 import DateModal from './dateModal';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+
 const ScheduleLessonCard = ({
   name, weekday, date, timeInterval, disabled,
 }) => {
@@ -114,7 +115,13 @@ const ScheduleLessonCard = ({
             date={date}
             timeInterval={timeInterval}
           />
-          <DateModal isOpenModal={openDateModal} handleClose={handleClickCloseDateModal} />
+          <DateModal
+            isOpenModal={openDateModal}
+            handleClose={handleClickCloseDateModal}
+            name={name}
+            date={date}
+            timeInterval={timeInterval}
+          />
         </Grid>
       </Grid>
     </Box>

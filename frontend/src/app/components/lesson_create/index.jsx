@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import React, { useState } from 'react';
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';

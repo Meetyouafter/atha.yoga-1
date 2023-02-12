@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import {
   Button, Dialog, Grid, Typography, TextField, DialogActions, DialogContent, Stack, Snackbar,
 } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import MuiAlert from '@mui/material/Alert';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
@@ -14,20 +15,20 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import getLessons from '../../services/shedule';
+import { setAlertProps } from '../../core/slices/alert-notification';
+import ScheduleService from '../../services/shedule';
 import './styles.scss';
-
-const Alert = React.forwardRef((props, ref) => <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />);
 
 const DateModal = ({
   isOpenModal, handleClose, name, date, timeInterval, handleMenuClose,
 }) => {
   const [newLessonDate, setNewLessonDate] = useState(null);
   const [newLessonTime, setNewLessonTime] = useState(null);
-  const [isSendForm, setIsSendForm] = useState(false);
+  const [lessonDateForPost, setLessonDateForPost] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
-  const [openAlert, setOpenAlert] = React.useState(false);
+
+  const dispatch = useDispatch();
 
   const getValidationFormErrorMessages = () => {
     let dateError;
@@ -55,23 +56,11 @@ const DateModal = ({
     });
   };
 
-  const handleOpenAlert = () => {
-    getValidationFormErrorMessages();
-    setOpenAlert(true);
-  };
-
-  const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenAlert(false);
-  };
-
   const postNewDate = () => {
-    getLessons()
+    ScheduleService.postNewLessonDate(id, date)
       .then(handleClose())
       .then(handleMenuClose())
-      .then(setIsSendForm(true));
+      .then(dispatch(setAlertProps({ display: true, status: 'success', title: 'Занятие перенесено' })));
   };
 
   return (
@@ -91,7 +80,6 @@ const DateModal = ({
             <DialogContent sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
 
               <Grid container>
-
                 <Grid container item sx={{ alignItems: 'flex-start', justifyContent: 'space-between', paddingBottom: '20px' }}>
                   <Typography id="alert-dialog-title" sx={{ fontSize: '18px', color: '#212529', paddingBottom: '18px' }}>
                     Перенести занятие
@@ -140,7 +128,6 @@ const DateModal = ({
                     onChange={newValue => setNewLessonDate(newValue)}
                     renderInput={params => <TextField {...params} sx={{ width: pointForAdaptiveToSM ? '100%' : '48%', marginBottom: pointForAdaptiveToSM ? '10px' : '0px' }} required error={!!validationErrors.dateError} helperText={validationErrors.dateError} />}
                   />
-
                   <TimePicker
                     label="Время"
                     value={newLessonTime}
@@ -158,20 +145,10 @@ const DateModal = ({
                 spacing={2}
                 sx={{ width: 'auto' }}
               >
-                <Button onClick={handleOpenAlert} type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>
+                <Button onClick={() => getValidationFormErrorMessages} type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>
                   Перенести
                 </Button>
-                {isSendForm ? (
-                  <Snackbar bodystyle={{ backgroundColor: '#2E7D32' }} open={openAlert} autoHideDuration={500000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-                    <Alert onClose={handleCloseAlert} sx={{ width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.9)', color: '#212121' }}>
-                      <Typography sx={{ fontSize: '16px', color: '#212121', fontWeight: '500' }}>
-                        Занятие перенесено
-                      </Typography>
-                    </Alert>
-                  </Snackbar>
-                ) : ''}
               </Stack>
-
             </DialogActions>
           </form>
         </Dialog>

@@ -4,14 +4,14 @@ import Header from '../header';
 import ScheduleLessonCard from '../schedule-lesson-card';
 import LayoutContainer from '../layout-container';
 import getDataForSchedule from './helper';
-import getLessons from '../../services/shedule';
+import ScheduleService from '../../services/shedule';
 
 const ScheduleLessons = () => {
   const [lessons, setLessons] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    getLessons()
+    ScheduleService.postLessons()
       .then(response => setLessons(response.data.data))
       .catch(err => setError(err.message));
   }, []);
@@ -22,6 +22,7 @@ const ScheduleLessons = () => {
     return error ? <div>{error}</div> : (
       <ScheduleLessonCard
         name={dataForLesson.name}
+        id={lesson.id}
         weekday={dataForLesson.weekday}
         date={dataForLesson.date}
         timeInterval={dataForLesson.timeInterval}

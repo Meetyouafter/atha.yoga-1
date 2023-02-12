@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-useless-escape */
 import React, { useState } from 'react';
 import {
-  Button, Dialog, Grid, Typography, TextField, DialogActions, DialogContent, Stack, Snackbar,
+  Button, Dialog, Grid, Typography, TextField, DialogActions, DialogContent,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import MuiAlert from '@mui/material/Alert';
+import dayjs from 'dayjs';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -16,16 +17,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { setAlertProps } from '../../core/slices/alert-notification';
-import ScheduleService from '../../services/shedule';
-import './styles.scss';
+import updateLessonsDateSlice from '../../core/slices/schedule/updateLessonDate';
 
 const DateModal = ({
-  isOpenModal, handleClose, name, date, timeInterval, handleMenuClose,
+  isOpenModal, handleClose, name, index, date, timeInterval, handleMenuClose,
 }) => {
   const [newLessonDate, setNewLessonDate] = useState(null);
   const [newLessonTime, setNewLessonTime] = useState(null);
-  const [lessonDateForPost, setLessonDateForPost] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
+
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
 
   const dispatch = useDispatch();
@@ -35,18 +35,19 @@ const DateModal = ({
     let timeError;
     if (newLessonDate !== null && String(newLessonDate.$d) === 'Invalid Date') {
       dateError = 'Неверный формат даты';
+    } else if (newLessonDate === null) {
+      dateError = 'Обязательное поле';
+    } else if (newLessonDate < Date.now()) {
+      dateError = 'Дата должна быть не ранее сегодняшней';
+    } else {
+      dateError = '';
     }
     if (newLessonTime !== null && String(newLessonTime.$d) === 'Invalid Date') {
       timeError = 'Неверный формат времени';
-    }
-    if (newLessonDate < Date.now()) {
-      dateError = 'Дата должна быть не ранее сегодняшней';
-    }
-    if (newLessonDate === null) {
-      dateError = 'Обязательное поле';
-    }
-    if (newLessonTime === null) {
+    } else if (newLessonTime === null) {
       timeError = 'Обязательное поле';
+    } else {
+      timeError = '';
     }
 
     setValidationErrors({
@@ -56,8 +57,18 @@ const DateModal = ({
     });
   };
 
+  const getUniteDate = () => {
+    const lessonDate = newLessonDate;
+    const lessonTime = newLessonTime;
+    const hour = dayjs(lessonTime).get('hour');
+    const minute = dayjs(lessonTime).get('minute');
+    const dateValue = dayjs(lessonDate).set('hour', hour).set('minute', minute);
+    return dateValue.format();
+  };
+
   const postNewDate = () => {
-    ScheduleService.postNewLessonDate(id, date)
+    const lessonDateForPost = getUniteDate();
+    dispatch(updateLessonsDateSlice({ index, date: lessonDateForPost }))
       .then(handleClose())
       .then(handleMenuClose())
       .then(dispatch(setAlertProps({ display: true, status: 'success', title: 'Занятие перенесено' })));
@@ -141,14 +152,9 @@ const DateModal = ({
               sx={{ justifyContent: pointForAdaptiveToSM ? 'space-around' : 'right' }}
             >
               <Button onClick={handleClose} sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>Отмена</Button>
-              <Stack
-                spacing={2}
-                sx={{ width: 'auto' }}
-              >
-                <Button onClick={() => getValidationFormErrorMessages} type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>
-                  Перенести
-                </Button>
-              </Stack>
+              <Button onClick={getValidationFormErrorMessages} type="submit" sx={{ fontSize: pointForAdaptiveToSM ? '16px' : '14px' }}>
+                Перенести
+              </Button>
             </DialogActions>
           </form>
         </Dialog>

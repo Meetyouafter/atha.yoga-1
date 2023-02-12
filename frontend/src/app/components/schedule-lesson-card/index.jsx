@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {
@@ -11,7 +12,7 @@ import LinkModal from './linkModal';
 import DateModal from './dateModal';
 
 const ScheduleLessonCard = ({
-  name, weekday, date, timeInterval, disabled,
+  id, name, weekday, date, timeInterval, disabled,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLinkModal, setOpenLinkModal] = useState(false);
@@ -27,6 +28,7 @@ const ScheduleLessonCard = ({
 
   const handleMenuOpen = event => {
     setAnchorEl(event.currentTarget);
+    console.log(id, name, weekday, date, timeInterval, disabled)
   };
 
   const handleMenuClose = () => {
@@ -90,6 +92,7 @@ const ScheduleLessonCard = ({
             handleClose={handleClickCloseLinkModal}
             handleMenuClose={handleMenuClose}
             name={name}
+            index={id}
             date={date}
             timeInterval={timeInterval}
           />
@@ -98,6 +101,7 @@ const ScheduleLessonCard = ({
             handleClose={handleClickCloseDateModal}
             handleMenuClose={handleMenuClose}
             name={name}
+            index={id}
             date={date}
             timeInterval={timeInterval}
           />

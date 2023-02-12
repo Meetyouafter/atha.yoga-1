@@ -4,8 +4,8 @@ const getDataForSchedule = lesson => {
 
   const newStart = new Date(secondsFromStart);
 
-  const removeTimezone = ms => {
-    const dateWithTimezone = new Date(ms);
+  const removeTimezone = seconds => {
+    const dateWithTimezone = new Date(seconds);
     const dateWithouthTimezone = dateWithTimezone
       .setMinutes(dateWithTimezone.getMinutes() + dateWithTimezone.getTimezoneOffset());
     return new Date(dateWithouthTimezone);
@@ -66,6 +66,7 @@ const getDataForSchedule = lesson => {
 
   return {
     name: lesson.course.name,
+    id: lesson.id,
     weekday: dayOfWeek[weekday],
     date: `${normalizeDate(day, 'day')}.${normalizeDate(month, 'month')}`,
     timeInterval: getTimeInterval(),

@@ -1,20 +1,13 @@
 const getDataForSchedule = lesson => {
-  const secondsFromStart = Date.parse(lesson.start_at);
-  const secondsFromFinish = Date.parse(lesson.end_at);
+  const startDate = new Date(lesson.start_at);
+  const startTimezoneOffset = startDate.getTimezoneOffset() * 60000;
+  const newStartWithouthTimezone = new Date(startDate.getTime() + startTimezoneOffset);
 
-  const newStart = new Date(secondsFromStart);
+  const finishDate = new Date(lesson.end_at);
+  const finishTimezoneOffset = finishDate.getTimezoneOffset() * 60000;
+  const newFinishWithouthTimezone = new Date(finishDate.getTime() + finishTimezoneOffset);
 
-  const removeTimezone = seconds => {
-    const dateWithTimezone = new Date(seconds);
-    const dateWithouthTimezone = dateWithTimezone
-      .setMinutes(dateWithTimezone.getMinutes() + dateWithTimezone.getTimezoneOffset());
-    return new Date(dateWithouthTimezone);
-  };
-
-  const newStartWithouthTimezone = removeTimezone(secondsFromStart);
-  const newFinishWithouthTimezone = removeTimezone(secondsFromFinish);
-
-  const isPastLesson = !(newStart > new Date());
+  const isPastLesson = !(newStartWithouthTimezone > new Date());
 
   const [
     month,
@@ -25,9 +18,9 @@ const getDataForSchedule = lesson => {
     finishHour,
     finishMinutes,
   ] = [
-    newStart.getMonth(),
-    newStart.getDay(),
-    newStart.getDate(),
+    newStartWithouthTimezone.getMonth(),
+    newStartWithouthTimezone.getDay(),
+    newStartWithouthTimezone.getDate(),
     newStartWithouthTimezone.getHours(),
     newStartWithouthTimezone.getMinutes(),
     newFinishWithouthTimezone.getHours(),

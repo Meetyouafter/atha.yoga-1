@@ -143,7 +143,7 @@ const DateModal = ({
                     label="Время"
                     value={newLessonTime}
                     onChange={newValue => setNewLessonTime(newValue)}
-                    renderInput={params => <TextField sx={{ marginBottom: pointForAdaptiveToSM ? '5%' : '', width: pointForAdaptiveToSM ? '100%' : '48%' }} {...params} required error={!!validationErrors.timeError} helperText={validationErrors.timeError} />}
+                    renderInput={params => <TextField sx={{ marginBottom: pointForAdaptiveToSM ? '5%' : '0', width: pointForAdaptiveToSM ? '100%' : '48%' }} {...params} required error={!!validationErrors.timeError} helperText={validationErrors.timeError} />}
                   />
                 </Grid>
               </Grid>

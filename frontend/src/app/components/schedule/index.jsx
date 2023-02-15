@@ -23,6 +23,7 @@ const ScheduleLessons = () => {
       <ScheduleLessonCard
         name={dataForLesson.name}
         id={lesson.id}
+        courseId={lesson.course.id}
         weekday={dataForLesson.weekday}
         date={dataForLesson.date}
         timeInterval={dataForLesson.timeInterval}

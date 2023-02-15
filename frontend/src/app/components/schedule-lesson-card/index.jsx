@@ -7,12 +7,13 @@ import {
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
+import { useNavigate } from 'react-router-dom';
 import LessonMenu from './lessonMenu';
 import LinkModal from './linkModal';
 import DateModal from './dateModal';
 
 const ScheduleLessonCard = ({
-  id, name, weekday, date, timeInterval, disabled,
+  id, name, weekday, date, timeInterval, disabled, courseId,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLinkModal, setOpenLinkModal] = useState(false);
@@ -28,15 +29,23 @@ const ScheduleLessonCard = ({
 
   const handleMenuOpen = event => {
     setAnchorEl(event.currentTarget);
-    console.log(id, name, weekday, date, timeInterval, disabled)
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
+  const navigate = useNavigate();
+
   return (
-    <Box maxWidth="100%" disabled width="800px" m="16px" sx={{ border: '1px solid #E0E0E0', borderRadius: '8px' }}>
+    <Box
+      maxWidth="100%"
+      disabled
+      width="800px"
+      m="16px"
+      sx={{ border: '1px solid #E0E0E0', borderRadius: '8px' }}
+      onClick={() => navigate(`/lesson-details/${courseId}`)}
+    >
       <Grid container alignItems="center" justifyContent="center">
 
         <Grid item>
@@ -70,7 +79,7 @@ const ScheduleLessonCard = ({
           </Grid>
         </Grid>
 
-        <Grid item container alignItems="center" justifyContent="center" sx={{ width: '10%', marginBottom: pointForAdaptiveToSM ? '17%' : '' }}>
+        <Grid item container alignItems="center" justifyContent="center" sx={{ width: '10%', marginBottom: pointForAdaptiveToSM ? '17%' : '0' }}>
           <MoreHorizOutlinedIcon
             color="disabled"
             sx={{ cursor: 'pointer' }}

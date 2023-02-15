@@ -5,7 +5,7 @@ import getUrl from '../api';
 const PROFILE_URL = getUrl('/core/profile/');
 
 const getProfileData = id => axios
-  .get(`${PROFILE_URL}${id}/`, { headers: authHeader() });
+  .get(`${PROFILE_URL}${id}`, { headers: authHeader() });
 
 const ProfileService = { getProfileData };
 

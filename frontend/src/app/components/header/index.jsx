@@ -38,9 +38,18 @@ const Header = ({ title, withBackBtn = false }) => {
   const auth = useAuth();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [profileData, setProfileData] = useState(JSON.parse(localStorage.user));
+  const [profileData, setProfileData] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
-  const { id } = profileData.user;
+ 
+  const getUserID = () => {
+    if (localStorage.length !== 0) {
+      const data = JSON.parse(localStorage.user);
+      return data.user.id;
+    }
+    return null;
+  };
+
+  const id = getUserID();
 
   useEffect(() => {
     ProfileService.getProfileData(id)

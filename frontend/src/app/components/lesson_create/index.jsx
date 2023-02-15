@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -64,6 +64,8 @@ const LessonCreate = () => {
   const [validationErrors, setValidationErrors] = useState({});
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
 
@@ -182,13 +184,13 @@ const LessonCreate = () => {
   };
 
   const saveFormUsDraft = () => {
+    setLessonData(lessonData.is_draft = true);
     getCorrectDateTime();
     getCorrectOtherData();
     getValidationFormErrorMessages();
-    setLessonData({
-      ...lessonData,
-      is_draft: true,
-    });
+    LessonsService.postLesson(lessonData)
+      .then(setIsFormSend(true))
+      .then(navigate(-1));
   };
 
   const saveForm = () => {

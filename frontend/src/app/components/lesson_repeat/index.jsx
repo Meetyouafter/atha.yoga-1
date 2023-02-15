@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
@@ -79,7 +81,8 @@ const OnceLesson = ({
 };
 
 const RegularLessons = ({
-  start_datetime, deadline_datetime, lessonData, setLessonData, errorStartDate, errorFinishDate, errorLessons, pointForAdaptiveToSM,
+  start_datetime, deadline_datetime, lessonData, setLessonData, errorStartDate,
+  errorFinishDate, errorLessons, pointForAdaptiveToSM,
 }) => {
   const [regularLessonDay, setRegularLessonDay] = useState('');
   const [redularLessonTime, setRegularLessonTime] = useState(null);
@@ -137,15 +140,16 @@ const RegularLessons = ({
           onChange={newValue => setFinishDate(newValue)}
           renderInput={params => <TextField {...params} sx={{ width: pointForAdaptiveToSM ? '48%' : '35%' }} required error={!!errorFinishDate} helperText={errorFinishDate} />}
         />
-        <Typography
-          variant="modal"
-          sx={{
-            fontSize: pointForAdaptiveToSM ? '16px' : '18px', color: '#212121', paddingTop: '30px', paddingBottom: '20px', width: pointForAdaptiveToSM ? '90%' : '',
-          }}
-        >
-          Задайте регулярное расписание серии занятий на неделю
-        </Typography>
+
       </Grid>
+      <Typography
+        variant="modal"
+        sx={{
+          display: 'inline-block', fontSize: pointForAdaptiveToSM ? '16px' : '18px', color: '#212121', paddingTop: '30px', paddingBottom: '20px', width: pointForAdaptiveToSM ? '90%' : '100%',
+        }}
+      >
+        Задайте регулярное расписание серии занятий на неделю
+      </Typography>
 
       <Grid
         item
@@ -184,16 +188,15 @@ const RegularLessons = ({
           label="Время"
           value={redularLessonTime}
           id="regular_lesson_time"
-          sx={{ width: pointForAdaptiveToSM ? '100%' : '30%' }}
           onChange={newValue => setRegularLessonTime(newValue)}
-          renderInput={params => <TextField sx={{ marginBottom: pointForAdaptiveToSM ? '5%' : '' }} {...params} error={!!errorLessons} helperText={errorLessons} />}
+          renderInput={params => <TextField sx={{ width: pointForAdaptiveToSM ? '100%' : '30%', marginBottom: pointForAdaptiveToSM ? '5%' : '0' }} {...params} error={!!errorLessons} helperText={errorLessons} />}
         />
 
         <Button
           variant="text"
           disabled={!regularLessonDay.length || !redularLessonTime}
           onClick={getLessonInfo}
-          fullWidth={pointForAdaptiveToSM}
+          sx={{ width: pointForAdaptiveToSM ? '100%' : '30%' }}
         >
           Добавить занятие
         </Button>
@@ -233,7 +236,8 @@ const RegularLessons = ({
 };
 
 const RepeatLessons = ({
-  update, lessonData, setLessonData, errorDateForOnceLesson, errorTimeForOnceLesson, errorMessage, errorStartForRegularLesson, errorFinishForRegularLesson, errorLessons,
+  update, lessonData, setLessonData, errorDateForOnceLesson, errorTimeForOnceLesson,
+  errorMessage, errorStartForRegularLesson, errorFinishForRegularLesson, errorLessons,
 }) => {
   const pointForAdaptiveToSM = useMediaQuery('(max-width:600px)');
 

@@ -35,14 +35,20 @@ const ProfileCard = () => {
   const dispatch = useDispatch();
   //  const data = useSelector(state => state.profileData.profileData);
 
+  const getUserID = () => {
+    if (localStorage.length !== 0) {
+      const data = JSON.parse(localStorage.user);
+      return data.user.id;
+    }
+    return null;
+  };
+
+  const id = getUserID();
+
   useEffect(() => {
-    dispatch(getProfileDataSlice())
+    dispatch(getProfileDataSlice(id))
       .then(content => setProfileData(content.payload.data));
   }, []);
-
-  const {
-    about, avatar, first_name, last_name, username, background,
-  } = profileData;
 
   return (
     <Grid container sx={{ padding: pointForAdaptiveToSM ? '0' : '0px 10%', height: '100vh' }}>
@@ -50,7 +56,7 @@ const ProfileCard = () => {
         <Card
           variant="outlined"
         >
-          {!background ? (
+          {!profileData?.background ? (
             <CardMedia
               component="img"
               height="168"
@@ -61,33 +67,33 @@ const ProfileCard = () => {
             <CardMedia
               component="img"
               height="168"
-              image={background}
+              image={profileData?.background}
               alt="user's background"
             />
           )}
           <CardContent sx={{ height: '100%' }}>
             <Grid item container sx={{ flexDirection: 'column', alignItems: 'center' }}>
               <Avatar
-                src={defaultAvatar && avatar}
+                src={defaultAvatar && profileData?.avatar}
                 sx={{
                   width: 128, height: 128, marginTop: '-80px', marginBottom: '12px',
                 }}
               />
               <Typography variant="iter_h1" sx={{ paddingBottom: '3px', display: 'block' }}>
-                {first_name || 'Имя'}
+                {profileData?.first_name || 'Имя'}
                 {' '}
-                {last_name || 'Фамилия'}
+                {profileData?.last_name || 'Фамилия'}
               </Typography>
               <Typography
                 variant="iter_h2"
                 sx={{ paddingBottom: '20px', color: '#6C757D', display: 'block' }}
               >
                 @
-                {username || 'username'}
+                {profileData?.username || 'username'}
               </Typography>
             </Grid>
             <Grid item>
-              {!about ? <Box sx={{ display: 'flex', justifyContent: 'center' }}><EmptyDescription /></Box>
+              {!profileData?.about ? <Box sx={{ display: 'flex', justifyContent: 'center' }}><EmptyDescription /></Box>
                 : (
                   <>
                     <Typography
@@ -102,7 +108,7 @@ const ProfileCard = () => {
                         WebkitBoxOrient: 'vertical',
                       }}
                     >
-                      {about}
+                      {profileData?.about}
                     </Typography>
 
                     <div>
@@ -142,7 +148,7 @@ const ProfileCard = () => {
                           <Typography
                             variant="iter_h2"
                           >
-                            {about}
+                            {profileData?.about}
                           </Typography>
                         </DialogContent>
                         <DialogActions>
@@ -159,7 +165,7 @@ const ProfileCard = () => {
         </Card>
       </Grid>
 
-      {!about ? ''
+      {!profileData?.about ? ''
         : (
           <Grid item sx={{ width: '100%' }}>
             <Card>

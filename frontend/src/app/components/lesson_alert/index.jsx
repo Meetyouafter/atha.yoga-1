@@ -70,7 +70,7 @@ const DraftAlert = ({ saveFormUsDraft }) => {
           <Button onClick={() => navigate(-1)}>
             Не сохранять
           </Button>
-          <Button autoFocus onClick={handleClose}>
+          <Button type="submit" onClick={saveFormUsDraft}>
             Сохранить
           </Button>
         </DialogActions>

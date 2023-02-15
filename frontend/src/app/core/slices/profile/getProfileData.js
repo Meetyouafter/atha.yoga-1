@@ -3,9 +3,9 @@ import ProfileService from '../../../services/profile';
 
 const getProfileDataSlice = createAsyncThunk(
   'core/profile',
-  async thunkAPI => {
+  async (userID, thunkAPI) => {
     try {
-      const result = await ProfileService.getProfileData();
+      const result = await ProfileService.getProfileData(userID);
 
       return result.data;
     } catch (error) {
